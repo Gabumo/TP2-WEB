@@ -11,6 +11,7 @@ export function PageModificationClient() {
     const [clientModifie, setClientModifie] = useState(false);
     const [chargementClient, setChargementClient] = useState(true);
     const [client, setClient] = useState(null);
+    const [erreurs, setErreurs] = useState([]);
 
     useEffect(() => {
         async function recupererClient() {
@@ -47,13 +48,27 @@ export function PageModificationClient() {
         }
     }, [clientModifie]);
 
+    function checkErreurs() {
+        erreurs.length = 0;
+        if (nom.length < 2) {
+            erreurs.push('Le nom doit contenir au moins 2 caractères.');
+        }
+        if (prenom.length < 2) {
+            erreurs.push('Le prénom doit contenir au moins 2 caractères.');
+        }
+        if (new Date(dateNaissance) > new Date()) {
+            erreurs.push('La date de naissance doit être inférieure à la date d\'aujourd\'hui.');
+        }
+        return erreurs.length === 0;
+    }
+
     async function gererSoumission(e) {
         e.preventDefault();
 
         // Validation des données min 2 caractères pour le nom ou date de naissance plus grand que aujourd'hui
-        if (nom.length < 2 || prenom.length < 2 || new Date(dateNaissance) > new Date()) {
+        if (!checkErreurs()) {
             setDonneesValides(false);
-            setClientModifie(false);
+            //setClientModifie(false);
             return;
         }
         setDonneesValides(true);
@@ -126,16 +141,13 @@ export function PageModificationClient() {
                         </Link>
                     </div>
                     
-                    {!donneesValides && 
+                    {!donneesValides && !checkErreurs() &&
                         <Alert className="mt-3" variant="danger">
                             Les données entrées ne sont pas valides :
                             <ul>
-                                {nom.length < 2 &&
-                                    <li>Le nom doit contenir au moins 2 caractères.</li>}
-                                {prenom.length < 2 && 
-                                    <li>Le prénom doit contenir au moins 2 caractères.</li>}
-                                {new Date(dateNaissance) > new Date() && 
-                                    <li>La date de naissance doit être inférieure à la date d'aujourd'hui.</li>}
+                                {erreurs.map((erreur, index) => (
+                                    <li key={index}>{erreur}</li>
+                                ))}
                             </ul>
                         </Alert>
                     }

@@ -12,6 +12,7 @@ export function PageAjoutClient() {
     const [dateNaissance, setDateNaissance] = useState('');
     const [donneesValides, setDonneesValides] = useState(true);
     const [clientAjoute, setClientAjoute] = useState(false);
+    const [erreurs, setErreurs] = useState([]);
 
     // Masquer le message d'alerte d'ajout d'un client après 5 secondes
     // setTimeout non vu en classe, mais je l'ai utilisé dans un des projets AMOC.
@@ -21,6 +22,20 @@ export function PageAjoutClient() {
     }, 5000);
 }
 
+    function checkErreurs() {
+        erreurs.length = 0;
+        if (nom.length < 2) {
+            erreurs.push('Le nom doit contenir au moins 2 caractères.');
+        }
+        if (prenom.length < 2) {
+            erreurs.push('Le prénom doit contenir au moins 2 caractères.');
+        }
+        if (new Date(dateNaissance) > new Date()) {
+            erreurs.push('La date de naissance doit être inférieure à la date d\'aujourd\'hui.');
+        }
+        return erreurs.length === 0;
+}
+
     async function gererSoumission(e) {
         // Post request a http://localhost:2323/clients
         // Doc utilisée: https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples
@@ -28,9 +43,9 @@ export function PageAjoutClient() {
 
         // Validation des données min 2 caractères pour le nom ou date de naissance plus grand que aujourdhui et
         // affichage du message d'erreur
-        if (nom.length < 2 || prenom.length < 2 || new Date(dateNaissance) > new Date()) {
+        if (!checkErreurs()) {
             setDonneesValides(false);
-            setClientAjoute(false);
+            //setClientAjoute(false);
             return;
         }
         setDonneesValides(true);   
@@ -108,14 +123,14 @@ export function PageAjoutClient() {
                 <Button type="button" className="btn btn-secondary">Retourner à la liste de clients</Button>
             </Link>
 
-            {!donneesValides && 
+            {!donneesValides && !checkErreurs() &&
                 <Alert className="mt-3" variant="danger">
                     Les données entrées ne sont pas valides :
-                    <ul>
-                        {nom.length < 2 && <li>Le nom doit contenir au moins 2 caractères.</li>}
-                        {prenom.length < 2 && <li>Le prénom doit contenir au moins 2 caractères.</li>}
-                        {new Date(dateNaissance) > new Date() && <li>La date de naissance doit être inférieure à la date d'aujourd'hui.</li>}
-                    </ul>
+                        <ul>
+                            {erreurs.map((erreur, index) => (
+                                <li key={index}>{erreur}</li>
+                            ))}
+                        </ul>
                 </Alert>
             }
         </Form>
