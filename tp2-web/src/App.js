@@ -3,6 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { PageListeClients } from './pages/PageListeClients';
 import { PageAjoutClient } from './pages/PageAjoutClient';
+import { PageModificationClient } from './pages/PageModificationClient';
 import { 
   BrowserRouter,
   Routes,
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/ajout-client" element={<PageAjoutClient />} />
         <Route path="/liste-clients" element={<PageListeClients />} />
+        <Route path="/modification/:id" element={<PageModificationClient />} />
       </Routes>
     </BrowserRouter>
     </>

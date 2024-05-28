@@ -1,11 +1,9 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';	
 
 export function PageAjoutClient() {
@@ -13,7 +11,15 @@ export function PageAjoutClient() {
     const [prenom, setPrenom] = useState('');
     const [dateNaissance, setDateNaissance] = useState('');
     const [donneesValides, setDonneesValides] = useState(true);
+    const [clientAjoute, setClientAjoute] = useState(false);
 
+    // Masquer le message d'alerte d'ajout d'un client après 5 secondes
+    // setTimeout non vu en classe, mais je l'ai utilisé dans un des projets AMOC.
+    if (clientAjoute) {
+    setTimeout(() => {
+        setClientAjoute(false);
+    }, 5000);
+}
 
     async function gererSoumission(e) {
         // Post request a http://localhost:2323/clients
@@ -22,8 +28,9 @@ export function PageAjoutClient() {
 
         // Validation des données min 2 caractères pour le nom ou date de naissance plus grand que aujourdhui et
         // affichage du message d'erreur
-        if (nom.length < 2 || prenom.length < 2 || dateNaissance > new Date()) {
+        if (nom.length < 2 || prenom.length < 2 || new Date(dateNaissance) > new Date()) {
             setDonneesValides(false);
+            setClientAjoute(false);
             return;
         }
         setDonneesValides(true);   
@@ -38,10 +45,10 @@ export function PageAjoutClient() {
             .then(donnees => {
                 console.log(donnees);
                 if (donnees.clientId) {
+                    setClientAjoute(true);
                     setNom('');
                     setPrenom('');
                     setDateNaissance('');
-                    alert('Client ajouté avec succès!');
                 } else {
                     alert('Erreur lors de l\'ajout du client');
                 }
@@ -51,12 +58,10 @@ export function PageAjoutClient() {
 
     return (
         <>
-        <Alert variant="danger" show={!donneesValides}>
-            <ul>
-                <li>Les champs nom, prénom doivent contenir au minimum 2 caractères.</li>
-                <li>La date de naissance doit être inférieure à la date d'aujourd'hui.</li>
-            </ul>
+        <Alert variant="success" show={clientAjoute}>
+            <p>Client ajouté avec succès!</p>
         </Alert>
+
         <Form className="mt-3" onSubmit={gererSoumission}>
             <h1>Ajout d'un nouveau client</h1>
             <Form.Group className="mb-2">
@@ -99,7 +104,20 @@ export function PageAjoutClient() {
             </Form.Group>
 
             <Button className="me-2" variant="success" type="submit">Ajouter</Button>
-            <button type="button" className="btn btn-secondary">Retourner à la liste de clients</button>
+            <Link to="/liste-clients">
+                <Button type="button" className="btn btn-secondary">Retourner à la liste de clients</Button>
+            </Link>
+
+            {!donneesValides && 
+                <Alert className="mt-3" variant="danger">
+                    Les données entrées ne sont pas valides :
+                    <ul>
+                        {nom.length < 2 && <li>Le nom doit contenir au moins 2 caractères.</li>}
+                        {prenom.length < 2 && <li>Le prénom doit contenir au moins 2 caractères.</li>}
+                        {new Date(dateNaissance) > new Date() && <li>La date de naissance doit être inférieure à la date d'aujourd'hui.</li>}
+                    </ul>
+                </Alert>
+            }
         </Form>
         </>
     );
