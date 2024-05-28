@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Col, Alert, Form, Button } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
+import { Accordion } from 'react-bootstrap';
 
 export function PageModificationClient() {
     const { id } = useParams();
@@ -97,6 +98,23 @@ export function PageModificationClient() {
         }
     }
 
+    async function gererSuppressionAdresse(adresseId) {
+        try {
+            const reponse = await fetch(`/api/clients/${id}/Adresses/${adresseId}`, { method: 'DELETE' });
+            if (reponse.ok) {
+                setClient(prevClient => ({
+                    ...prevClient,
+                    adresses: prevClient.adresses.filter(adresse => adresse.adresseId !== adresseId)
+                }));
+            } else {
+                alert('Erreur lors de la suppression de l\'adresse');
+            }
+        } catch (error) {
+            console.error('Erreur lors de la suppression de l\'adresse: ', error);
+            alert('Erreur lors de la suppression de l\'adresse');
+        }
+    }
+
     return (
         <>
             <h1>Modification d'un client</h1>
@@ -154,6 +172,33 @@ export function PageModificationClient() {
 
                     {clientModifie && <Alert className="mt-3" variant="success">Le client a été modifié.</Alert>}
                 </Form>
+            }
+            {!chargementClient && client.adresses && client.adresses.length > 0 &&
+                <>
+                    <h2 className="mt-3">Adresses</h2>
+                    <Accordion defaultActiveKey="0">
+                    {client.adresses.map(adresse => (
+                        <Accordion.Item key={adresse.adresseId} eventKey={adresse.adresseId}>
+                            <Accordion.Header><strong>{adresse.numeroCivique}, {adresse.typeVoie} {adresse.odonyme}</strong></Accordion.Header>
+                            <Accordion.Body>
+                                <p><strong>Ville:</strong> {adresse.nomMunicipalite}</p>
+                                <p><strong>Province/État:</strong> {adresse.etat}</p>
+                                <p><strong>Code postal:</strong> {adresse.codePostal}</p>
+                                <p><strong>Pays:</strong> {adresse.pays}</p>
+
+                                <Link to={`/modification/${id}/${adresse.adresseId}`}>
+                                    <Button className="me-2" variant="primary">Modifier</Button>
+                                </Link>
+
+                                <Button className="me-2" variant="danger" 
+                                onClick={() => gererSuppressionAdresse(adresse.adresseId)}>
+                                    Supprimer
+                                </Button>
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    ))}
+                    </Accordion>
+                </>
             }
             {!chargementClient && !client && <Alert variant="danger">Client introuvable !</Alert>}
 
