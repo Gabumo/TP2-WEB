@@ -6,9 +6,12 @@ import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { FormCheck } from 'react-bootstrap';
 
 export const PageListeClients = () => {
     const [clients, setClients] = useState([]);
+    const [filtreClient, setFiltreClient] = useState([]);
+
 
     useEffect(() => {
         fetch("/api/Clients")
@@ -20,18 +23,25 @@ export const PageListeClients = () => {
 
     return (
         <Container>
-            <Row>
-                <Col>
+            <Row className="justify-content-center">
+                <Col md={8}>
                     <h1>Liste des clients</h1>
+                    <Container>
+                    <Link to="/ajout-client">
+                        <Button variant="primary">Ajouter un client</Button>
+                    </Link>
+                    </Container>
+                
+
                     {clients.length === 0 ? (
                         <p>Aucun client trouvé.</p>
                     ) : (
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>Nom</th>
-                                    <th>Prénom</th>
-                                    <th>Actions</th>
+                                    <th style={{ width: '37.5%' }}>Nom</th>
+                                    <th style={{ width: '37.5%' }}>Prénom</th>
+                                    <th style={{ width: '25%' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
