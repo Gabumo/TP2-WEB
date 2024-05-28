@@ -130,9 +130,12 @@ export function PageModificationClient() {
                         <Alert className="mt-3" variant="danger">
                             Les données entrées ne sont pas valides :
                             <ul>
-                                {nom.length < 2 && <li>Le nom doit contenir au moins 2 caractères.</li>}
-                                {prenom.length < 2 && <li>Le prénom doit contenir au moins 2 caractères.</li>}
-                                {new Date(dateNaissance) > new Date() && <li>La date de naissance doit être inférieure à la date d'aujourd'hui.</li>}
+                                {nom.length < 2 &&
+                                    <li>Le nom doit contenir au moins 2 caractères.</li>}
+                                {prenom.length < 2 && 
+                                    <li>Le prénom doit contenir au moins 2 caractères.</li>}
+                                {new Date(dateNaissance) > new Date() && 
+                                    <li>La date de naissance doit être inférieure à la date d'aujourd'hui.</li>}
                             </ul>
                         </Alert>
                     }
