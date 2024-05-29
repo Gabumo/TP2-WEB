@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FormCheck } from 'react-bootstrap';
 
 export const PageListeClients = () => {
     const [clients, setClients] = useState([]);
@@ -26,12 +25,23 @@ export const PageListeClients = () => {
             <Row className="justify-content-center">
                 <Col md={8}>
                     <h1>Liste des clients</h1>
+
+
                     <Container>
-                    <Link to="/ajout-client">
-                        <Button variant="primary">Ajouter un client</Button>
-                    </Link>
+                        <Row className="align-items-center">
+                            <Col md={6}>
+
+                                {/*mettre la partie tri*/}
+                            </Col>
+                            <Col md={6} className="text-end">
+                                <Link to="/ajout-client">
+                                    <Button variant="primary">Ajouter un client</Button>
+                                </Link>
+                            </Col>
+                        </Row>
                     </Container>
-                
+
+
 
                     {clients.length === 0 ? (
                         <p>Aucun client trouvé.</p>
@@ -50,15 +60,18 @@ export const PageListeClients = () => {
                                         <td>{client.nom}</td>
                                         <td>{client.prenom}</td>
                                         <td>
-                                            <Button
-                                                variant="primary"
-                                                onClick={() => {/*mettre lien pour modifier*/ }}
-                                            >
-                                                Modifier
-                                            </Button>{' '}
+                                            <Link to={`/modification/${client.clientId}`}>
+
+                                                <Button
+                                                    variant="primary"
+                                                    className="me-2"
+                                                >
+                                                    Modifier
+                                                </Button>
+                                            </Link>
                                             <Button
                                                 variant="danger"
-                                                onClick={() => {/*mettre lien pour supprimer*/ }}
+
                                             >
                                                 Supprimer
                                             </Button>
