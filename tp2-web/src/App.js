@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { BarreNavigation } from './BarreNavigation.js';
+import {PageAccueil} from './pages/PageAccueil.js';
 import { PageListeClients } from './pages/PageListeClients.js';
 import { PageAjoutClient } from './pages/PageAjoutClient.js';
 import { PageModificationClient } from './pages/PageModificationClient.js';
@@ -15,7 +17,9 @@ function App() {
   return (
     <>
     <BrowserRouter>
+    <BarreNavigation />
       <Routes>
+        <Route path="/" element={<PageAccueil />} />
         <Route path="/ajout-client" element={<PageAjoutClient />} />
         <Route path="/liste-clients" element={<PageListeClients />} />
         <Route path="/modification/:id" element={<PageModificationClient />} />

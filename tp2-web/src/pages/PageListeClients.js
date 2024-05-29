@@ -35,7 +35,7 @@ export const PageListeClients = () => {
                             </Col>
                             <Col md={6} className="text-end">
                                 <Link to="/ajout-client">
-                                    <Button variant="primary">Ajouter un client</Button>
+                                    <Button  className="m-2" variant="primary">Ajouter un client</Button>
                                 </Link>
                             </Col>
                         </Row>
