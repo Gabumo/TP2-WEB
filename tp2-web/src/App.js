@@ -6,6 +6,7 @@ import { PageListeClients } from './pages/PageListeClients.js';
 import { PageAjoutClient } from './pages/PageAjoutClient.js';
 import { PageModificationClient } from './pages/PageModificationClient.js';
 import { PageModificationAjoutAdresse } from './pages/PageModificationAjoutAdresse.js';
+import { PageConfirmationSuppression } from './pages/PageConfirmationSuppression.js';
 import { 
   BrowserRouter,
   Routes,
@@ -23,6 +24,7 @@ function App() {
         <Route path="/liste-clients" element={<PageListeClients />} />
         <Route path="/modification/:id" element={<PageModificationClient />} />
         <Route path="/modification/:id/:adresseId" element={<PageModificationAjoutAdresse />} />
+        <Route path="/confirmation-suppression/:id" element={<PageConfirmationSuppression />} />
       </Routes>
     </BrowserRouter>
     </>

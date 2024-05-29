@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export const PageListeClients = () => {
     const [clients, setClients] = useState([]);
     const [filtreClient, setFiltreClient] = useState([]);
+    
 
 
     useEffect(() => {
@@ -60,21 +61,12 @@ export const PageListeClients = () => {
                                         <td>{client.nom}</td>
                                         <td>{client.prenom}</td>
                                         <td>
-                                            <Link to={`/modification/${client.clientId}`}>
-
-                                                <Button
-                                                    variant="primary"
-                                                    className="me-2"
-                                                >
-                                                    Modifier
-                                                </Button>
+                                        <Link to={`/modification/${client.clientId}`}>
+                                                <Button variant="primary">Modifier</Button>
                                             </Link>
-                                            <Button
-                                                variant="danger"
-
-                                            >
-                                                Supprimer
-                                            </Button>
+                                            <Link to={`/confirmation-suppression/${client.clientId}`}>
+                                                <Button variant="danger">Supprimer</Button>
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}
