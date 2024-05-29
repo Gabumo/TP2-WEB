@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Form, Button, Alert, Col } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export function PageModificationAdresse() {
+export function PageModificationAjoutAdresse() {
     const { id, adresseId } = useParams();
     const [adresse, setAdresse] = useState(null);
     const [numeroCivique, setNumeroCivique] = useState('');
@@ -19,34 +19,40 @@ export function PageModificationAdresse() {
 
     useEffect(() => {
         async function recupererAdresse() {
-            setChargement(true);
-            try {
-                const reponse = await fetch(`/api/Clients/${id}/Adresses/${adresseId}`);
-                const donnees = await reponse.json();
-                if (donnees) {
-                    setAdresse(donnees);
-                    setNumeroCivique(donnees.numeroCivique);
-                    setTypeVoie(donnees.typeVoie);
-                    setOdonyme(donnees.odonyme);
-                    setNomMunicipalite(donnees.nomMunicipalite);
-                    setEtat(donnees.etat);
-                    setCodePostal(donnees.codePostal);
-                    setPays(donnees.pays);
-                } else {
+            if (adresseId && adresseId !== 'creation') {
+                setChargement(true);
+                try {
+                    const reponse = await fetch(`/api/Clients/${id}/Adresses/${adresseId}`);
+                    const donnees = await reponse.json();
+                    if (reponse.ok) {
+                        setAdresse(donnees);
+                        setNumeroCivique(donnees.numeroCivique);
+                        setTypeVoie(donnees.typeVoie);
+                        setOdonyme(donnees.odonyme);
+                        setNomMunicipalite(donnees.nomMunicipalite);
+                        setEtat(donnees.etat);
+                        setCodePostal(donnees.codePostal);
+                        setPays(donnees.pays);
+                    } else {
+                        setAdresse(null);
+                    }
+                } catch (error) {
+                    console.error("Erreur dans la récupération de l'adresse: ", error);
                     setAdresse(null);
                 }
-            } catch (error) {
-                console.error("Erreur dans la récupération de l'adresse: ", error);
-                setAdresse(null);
-            }
+            } 
             setChargement(false);
-        }
+        }    
         recupererAdresse();
     }, [id, adresseId]);
 
     function checkErreurs() {
         const nouvellesErreurs = [];
 
+        const numeroCiviqueInt = parseInt(numeroCivique);
+        if (isNaN(numeroCiviqueInt) || numeroCiviqueInt < 1) {
+            nouvellesErreurs.push('Le numéro civique doit être une valeur numérique positive.');
+        }
         if (typeVoie.trim().length < 2) {
             nouvellesErreurs.push('Le type de voie doit contenir au moins 2 caractères.');
         }
@@ -59,9 +65,7 @@ export function PageModificationAdresse() {
         if (etat.trim().length < 2) {
             nouvellesErreurs.push('L\'état/province doit contenir au moins 2 caractères.');
         }
-        if (codePostal.trim() < 5) {
-            // Une recherche google rapide m'indique que les codes postaux en général ne sont pas plus courts que 5 caractères
-            // Je n'ai pas fait de regex car les formats de code postal sont différents selon les pays
+        if (codePostal.trim().length < 5) {
             nouvellesErreurs.push('Le code postal doit contenir au moins 5 caractères.');
         }
         if (pays.trim().length < 2) {
@@ -79,23 +83,41 @@ export function PageModificationAdresse() {
             return;
         }
 
-        const requestOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                adresseId,
-                numeroCivique,
-                typeVoie,
-                odonyme,
-                nomMunicipalite,
-                etat,
-                codePostal,
-                pays
-            })
-        };
+        let requestOptions = '';
+        if (adresseId !== 'creation') {
+            requestOptions = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    adresseId,
+                    numeroCivique,
+                    typeVoie,
+                    odonyme,
+                    nomMunicipalite,
+                    etat,
+                    codePostal,
+                    pays
+                })
+            };
+        } else {
+            requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    numeroCivique,
+                    typeVoie,
+                    odonyme,
+                    nomMunicipalite,
+                    etat,
+                    codePostal,
+                    pays
+                })
+            };
+        }
 
         try {
-            const reponse = await fetch(`/api/Clients/${id}/Adresses/${adresseId}`, requestOptions);
+            const lienApi = adresseId !== 'creation' ? `/api/Clients/${id}/Adresses/${adresseId}` : `/api/Clients/${id}/Adresses`;
+            const reponse = await fetch(lienApi, requestOptions);
             if (reponse.ok) {
                 setAdresseModifie(true);
             } else {
@@ -109,9 +131,9 @@ export function PageModificationAdresse() {
 
     return (
         <>
-            <h1>Modification d'une adresse</h1>
-            {chargement && <p>Chargement de l'adresse...</p>}
-            {!chargement && adresse && (
+            <h1>{adresseId !== 'creation' ? "Modification d'une adresse" : "Ajouter une adresse"}</h1>
+            {chargement && <p>Chargement en cours...</p>}
+            {!chargement && (adresseId === 'creation' || adresse) && (
                 <Form onSubmit={gererSoumission}>
                     <Form.Group controlId="numeroCivique">
                         <Form.Label>Numéro Civique</Form.Label>
@@ -179,7 +201,7 @@ export function PageModificationAdresse() {
 
                     <div className="mt-3">
                         <Button className="me-2" variant="primary" type="submit">
-                            Modifier
+                            {adresseId !== 'creation' ? "Modifier" : "Ajouter"}
                         </Button>
 
                         <Link to={`/modification/${id}`}>
@@ -189,10 +211,15 @@ export function PageModificationAdresse() {
                         </Link>
                     </div>
 
-                    {adresseModifie && <Alert className="mt-3" variant="success">L'adresse a été modifiée.</Alert>}
+                    {adresseModifie && 
+                        <Alert className="mt-3" variant="success">
+                           {adresseId !== 'creation' ? "L'adresse a été modifiée." : "L'adresse a été ajoutée."}
+                        </Alert>}
                 </Form>
             )}
-            {!chargement && adresse === null && <Alert variant="danger">Adresse introuvable !</Alert>}
+            {!chargement && adresseId !== 'creation' && adresse === null && (
+                <Alert variant="danger">Adresse introuvable !</Alert>
+            )}
             {!chargement && erreurs.length > 0 && (
                 <Alert variant="danger" className="mt-3">
                     <p>Les données entrées ne sont pas valides :</p>

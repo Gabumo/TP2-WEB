@@ -50,16 +50,17 @@ export function PageModificationClient() {
     }, [clientModifie]);
 
     function checkErreurs() {
-        erreurs.length = 0;
+        const nouvellesErreurs = [];
         if (nom.length < 2) {
-            erreurs.push('Le nom doit contenir au moins 2 caractères.');
+            nouvellesErreurs.push('Le nom doit contenir au moins 2 caractères.');
         }
         if (prenom.length < 2) {
-            erreurs.push('Le prénom doit contenir au moins 2 caractères.');
+            nouvellesErreurs.push('Le prénom doit contenir au moins 2 caractères.');
         }
         if (new Date(dateNaissance) > new Date()) {
-            erreurs.push('La date de naissance doit être inférieure à la date d\'aujourd\'hui.');
+            nouvellesErreurs.push('La date de naissance doit être inférieure à la date d\'aujourd\'hui.');
         }
+        setErreurs(nouvellesErreurs);
         return erreurs.length === 0;
     }
 
@@ -198,6 +199,10 @@ export function PageModificationClient() {
                         </Accordion.Item>
                     ))}
                     </Accordion>
+                    
+                    <Link to={`/modification/${id}/creation`}>
+                        <Button className="mt-3 ms-3" variant="success">Ajouter une adresse</Button>
+                    </Link>
                 </>
             }
             {!chargementClient && !client && <Alert variant="danger">Client introuvable !</Alert>}
