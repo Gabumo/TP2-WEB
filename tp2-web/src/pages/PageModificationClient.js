@@ -174,37 +174,45 @@ export function PageModificationClient() {
                     {clientModifie && <Alert className="mt-3" variant="success">Le client a été modifié.</Alert>}
                 </Form>
             }
-            {!chargementClient && client.adresses && client.adresses.length > 0 &&
+            {!chargementClient && client.adresses && (
                 <>
                     <h2 className="mt-3">Adresses</h2>
+                    {client.adresses.length === 0 && (
+                        <p>Aucune adresse enregistrée.</p>
+                    )}
+                    {client.adresses.length > 0 && (
                     <Accordion defaultActiveKey="0">
-                    {client.adresses.map(adresse => (
-                        <Accordion.Item key={adresse.adresseId} eventKey={adresse.adresseId}>
-                            <Accordion.Header><strong>{adresse.numeroCivique}, {adresse.typeVoie} {adresse.odonyme}</strong></Accordion.Header>
-                            <Accordion.Body>
-                                <p><strong>Ville:</strong> {adresse.nomMunicipalite}</p>
-                                <p><strong>Province/État:</strong> {adresse.etat}</p>
-                                <p><strong>Code postal:</strong> {adresse.codePostal}</p>
-                                <p><strong>Pays:</strong> {adresse.pays}</p>
+                        {client.adresses.map(adresse => (
+                            <Accordion.Item key={adresse.adresseId} eventKey={adresse.adresseId}>
+                                <Accordion.Header>
+                                    <strong>{adresse.numeroCivique}, {adresse.typeVoie} {adresse.odonyme}</strong>
+                                </Accordion.Header>
 
-                                <Link to={`/modification/${id}/${adresse.adresseId}`}>
-                                    <Button className="me-2" variant="primary">Modifier</Button>
-                                </Link>
+                                <Accordion.Body>
+                                    <p><strong>Ville:</strong> {adresse.nomMunicipalite}</p>
+                                    <p><strong>Province/État:</strong> {adresse.etat}</p>
+                                    <p><strong>Code postal:</strong> {adresse.codePostal}</p>
+                                    <p><strong>Pays:</strong> {adresse.pays}</p>
 
-                                <Button className="me-2" variant="danger" 
-                                onClick={() => gererSuppressionAdresse(adresse.adresseId)}>
-                                    Supprimer
-                                </Button>
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    ))}
+                                    <Link to={`/modification/${id}/${adresse.adresseId}`}>
+                                        <Button className="me-2" variant="primary">Modifier</Button>
+                                    </Link>
+
+                                    <Button className="me-2" variant="danger" 
+                                    onClick={() => gererSuppressionAdresse(adresse.adresseId)}>
+                                        Supprimer
+                                    </Button>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        ))}
                     </Accordion>
+                    )}
                     
                     <Link to={`/modification/${id}/creation`}>
-                        <Button className="mt-3 ms-3" variant="success">Ajouter une adresse</Button>
+                        <Button className="m-2" variant="success">Ajouter une adresse</Button>
                     </Link>
                 </>
-            }
+            )}
             {!chargementClient && !client && <Alert variant="danger">Client introuvable !</Alert>}
 
         </>
