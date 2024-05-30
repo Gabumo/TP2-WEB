@@ -22,7 +22,7 @@ export function PageModificationClient() {
                 const donnees = await reponse.json();
                 console.log(donnees);
                 if (donnees) {
-                    const dateFormatee = donnees.dateNaissance.split('T')[0];
+                    const dateFormatee = donnees.dateNaissance ? donnees.dateNaissance.split('T')[0] : null;
                     setClient(donnees);
                     setNom(donnees.nom);
                     setPrenom(donnees.prenom);
@@ -144,7 +144,7 @@ export function PageModificationClient() {
                         <Form.Label>Date de naissance</Form.Label>
                         <Form.Control
                             type="date"
-                            value={dateNaissance}
+                            value={dateNaissance ? dateNaissance : ''}
                             onChange={e => setDateNaissance(e.target.value)}
                             required
                         />
