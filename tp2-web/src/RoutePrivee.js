@@ -11,5 +11,5 @@ export const RoutePrivee = () => {
         return <div>Erreur: {error.message}</div>;
     }
 
-    return isAuthenticated ? <Outlet /> : <Navigate to="/" />;
+    return isAuthenticated ? <Outlet /> : <Navigate to="/se-connecter" />;
     };

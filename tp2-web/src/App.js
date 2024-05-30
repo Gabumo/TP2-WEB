@@ -8,7 +8,9 @@ import { PageAjoutClient } from './pages/PageAjoutClient.js';
 import { PageModificationClient } from './pages/PageModificationClient.js';
 import { PageModificationAjoutAdresse } from './pages/PageModificationAjoutAdresse.js';
 import { PageConfirmationSuppression } from './pages/PageConfirmationSuppression.js';
+import { PageSeConnecter } from './pages/PageSeConnecter.js';
 import { RoutePrivee } from './RoutePrivee.js';
+import { Page404 } from './pages/Page404.js';
 
 import { 
   BrowserRouter,
@@ -18,39 +20,21 @@ import {
 } from 'react-router-dom';
 
 function App() {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   return (
     <>
     <BrowserRouter>
-    <div>
-        <ul>
-          {isAuthenticated ? (
-            <>
-              <button onClick={() => logout()}>Se déconnecter</button>
-              <li>
-                <Link to="/">Page d'accueil</Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <button onClick={() => loginWithRedirect()}>Se connecter</button>
-              <li>
-                <Link to="/">Page d'accueil</Link>
-              </li>
-            </>
-          )}
-        </ul>
-      </div>
     <BarreNavigation />
       <Routes>
         <Route path="/" element={<PageAccueil />} />
+        <Route path="/se-connecter" element={<PageSeConnecter />} />
         <Route element={<RoutePrivee />}>
-        <Route path="/ajout-client" element={<PageAjoutClient />} />
-        <Route path="/liste-clients" element={<PageListeClients />} />
-        <Route path="/modification/:id" element={<PageModificationClient />} />
-        <Route path="/modification/:id/:adresseId" element={<PageModificationAjoutAdresse />} />
-        <Route path="/confirmation-suppression/:id" element={<PageConfirmationSuppression />} />
+          <Route path="/ajout-client" element={<PageAjoutClient />} />
+          <Route path="/liste-clients" element={<PageListeClients />} />
+          <Route path="/modification/:id" element={<PageModificationClient />} />
+          <Route path="/modification/:id/:adresseId" element={<PageModificationAjoutAdresse />} />
+          <Route path="/confirmation-suppression/:id" element={<PageConfirmationSuppression />} />
         </Route>
+        <Route path="*" element={<Page404/>} />
       </Routes>
     </BrowserRouter>
     </>
