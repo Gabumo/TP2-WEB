@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export const PageListeClients = () => {
     const [clients, setClients] = useState([]);
     const [tri, setTri] = useState('nom');
+    // const [adresse, setAdresse] = useState([]);
 
 
     useEffect(() => {
@@ -17,6 +18,7 @@ export const PageListeClients = () => {
             .then(response => response.json())
             .then(data => {
                 setClients(data);
+                
             })
     }, []);
 
@@ -40,7 +42,7 @@ export const PageListeClients = () => {
                 <Col md={8}>
                     <h1>Liste des clients</h1>
 
-
+ {/*ajouter accordeon*/}
                     <Container>
                         <Row className="align-items-center">
                             <Col md={3}>
@@ -56,8 +58,6 @@ export const PageListeClients = () => {
                             </Col>
                         </Row>
                     </Container>
-
-
 
                     {clients.length === 0 ? (
                         <p>Aucun client trouvé.</p>
