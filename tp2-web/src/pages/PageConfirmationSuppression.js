@@ -1,6 +1,3 @@
-// import Container from 'react-bootstrap/Container';
-// import Row from 'react-bootstrap/Row';
-// import Col from 'react-bootstrap/Col';
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
@@ -12,7 +9,7 @@ export function PageConfirmationSuppression() {
     const [clientSupprime, setClientSupprime] = useState(false);
 
     async function handleSuppression() {
-        try {
+        
             const response = await fetch(`/api/Clients/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 alert('Client supprimé avec succès'); // a revoir
@@ -21,10 +18,6 @@ export function PageConfirmationSuppression() {
                 alert('Erreur lors de la suppression du client');
                 
             }
-        } catch (error) {
-            console.error('Erreur lors de la suppression du client: ', error);
-            alert('Erreur lors de la suppression du client');
-        }
     }
 
     return (
