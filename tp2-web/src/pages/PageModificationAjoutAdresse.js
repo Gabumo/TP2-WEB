@@ -16,6 +16,7 @@ export function PageModificationAjoutAdresse() {
     const [adresseModifie, setAdresseModifie] = useState(false);
     const [erreurs, setErreurs] = useState([]);
     const [chargement, setChargement] = useState(true);
+    const [informationSupplementaire, setInfo] = useState('');
 
     useEffect(() => {
         async function recupererAdresse() {
@@ -33,6 +34,7 @@ export function PageModificationAjoutAdresse() {
                         setEtat(donnees.etat);
                         setCodePostal(donnees.codePostal);
                         setPays(donnees.pays);
+                        setInfo(donnees.informationSupplementaire);
                     } else {
                         setAdresse(null);
                     }
@@ -96,7 +98,8 @@ export function PageModificationAjoutAdresse() {
                     nomMunicipalite,
                     etat,
                     codePostal,
-                    pays
+                    pays,
+                    informationSupplementaire
                 })
             };
         } else {
@@ -110,7 +113,8 @@ export function PageModificationAjoutAdresse() {
                     nomMunicipalite,
                     etat,
                     codePostal,
-                    pays
+                    pays,
+                    informationSupplementaire
                 })
             };
         }
@@ -196,6 +200,15 @@ export function PageModificationAjoutAdresse() {
                             value={pays}
                             onChange={e => setPays(e.target.value)}
                             required
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="infoSupp">
+                        <Form.Label>Information supplémentaire</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={informationSupplementaire}
+                            onChange={e => setInfo(e.target.value)}
                         />
                     </Form.Group>
 

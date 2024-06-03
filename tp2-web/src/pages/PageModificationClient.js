@@ -193,6 +193,10 @@ export function PageModificationClient() {
                                     <p><strong>Province/État:</strong> {adresse.etat}</p>
                                     <p><strong>Code postal:</strong> {adresse.codePostal}</p>
                                     <p><strong>Pays:</strong> {adresse.pays}</p>
+                                    <p>
+                                        <strong>Information supplémentaire: </strong> 
+                                        {adresse.informationSupplementaire ? adresse.informationSupplementaire : "Aucune"}
+                                    </p>
 
                                     <Link to={`/modification/${id}/${adresse.adresseId}`}>
                                         <Button className="me-2" variant="primary">Modifier</Button>
