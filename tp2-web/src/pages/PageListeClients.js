@@ -5,27 +5,51 @@ import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import Accordion from 'react-bootstrap/Accordion';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const PageListeClients = () => {
     const [clients, setClients] = useState([]);
     const [tri, setTri] = useState('nom');
-    // const [adresse, setAdresse] = useState([]);
-
+    const [municipalites, setMunicipalites] = useState([]);
+    const [etats, setEtats] = useState([]);
+    const [pays, setPays] = useState([]);
 
     useEffect(() => {
         fetch("/api/Clients")
             .then(response => response.json())
             .then(data => {
                 setClients(data);
+
+                const toutesAdresses = data.flatMap(client => client.adresses);
                 
-            })
+                const uniqueMunicipalities = [];
+                const uniqueEtats = [];
+                const uniquePays = [];
+                
+                toutesAdresses.forEach(adresse => {
+                    if (!uniqueMunicipalities.includes(adresse.nomMunicipalite)) {
+                        uniqueMunicipalities.push(adresse.nomMunicipalite);
+                    }
+                    if (!uniqueEtats.includes(adresse.etat)) {
+                        uniqueEtats.push(adresse.etat);
+                    }
+                    if (!uniquePays.includes(adresse.pays)) {
+                        uniquePays.push(adresse.pays);
+                    }
+                });
+                
+                setMunicipalites(uniqueMunicipalities);
+                setEtats(uniqueEtats);
+                setPays(uniquePays);
+            });
     }, []);
+    
 
     const gererTri = (e) => {
         setTri(e.target.value);
     }
-    const trierClients = (clients) => { //ajouter la 2eme partie du tri
+    const trierClients = (clients) => { 
         return clients.sort((a, b) => {
             if (tri === 'nom') {
                 return a.nom.localeCompare(b.nom);
@@ -58,6 +82,67 @@ export const PageListeClients = () => {
                             </Col>
                         </Row>
                     </Container>
+                    
+                    <Accordion className="mt-3">
+                        <Accordion.Item eventKey="0">
+                            <Accordion.Header>Filtres</Accordion.Header>
+                            <Accordion.Body>
+                                <Accordion>
+                                    <Accordion.Item eventKey="0">
+                                        <Accordion.Header>Municipalité</Accordion.Header>
+                                        <Accordion.Body>
+                                        {municipalites.map((municipalite, index) => (
+                                                <div key={index}>
+                                                    <input
+                                                        type="checkbox"
+                                                        value={municipalite}
+                                                        // onChange
+                                                    />
+                                                    <label>
+                                                        {municipalite}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    <Accordion.Item eventKey="1">
+                                        <Accordion.Header>État</Accordion.Header>
+                                        <Accordion.Body>
+                                        {etats.map((etat, index) => (
+                                                <div key={index}>
+                                                    <input
+                                                        type="checkbox"
+                                                        value={etat}
+                                                        // onChange
+                                                    />
+                                                    <label>
+                                                        {etat}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    <Accordion.Item eventKey="2">
+                                        <Accordion.Header>Pays</Accordion.Header>
+                                        <Accordion.Body>
+                                        {pays.map((pays, index) => (
+                                                <div key={index}>
+                                                    <input
+                                                        type="checkbox"
+                                                        value={pays}
+                                                        // onChange
+                                                    />
+                                                    <label>
+                                                        {pays}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
 
                     {clients.length === 0 ? (
                         <p>Aucun client trouvé.</p>
