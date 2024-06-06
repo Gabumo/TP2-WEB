@@ -5,8 +5,9 @@ import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import Accordion from 'react-bootstrap/Accordion';
+
 import FiltreAccordeon from './composant/FiltreAccordeon';
+import ClientTable from './composant/ClientTable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const PageListeClients = () => {
@@ -148,31 +149,7 @@ export const PageListeClients = () => {
                     {clients.length === 0 ? (
                         <p>Aucun client trouvé.</p>
                     ) : (
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '35%' }}>Nom</th>
-                                    <th style={{ width: '35%' }}>Prénom</th>
-                                    <th style={{ width: '30%' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {clientsTries.map(client => (
-                                    <tr key={client.clientId}>
-                                        <td>{client.nom}</td>
-                                        <td>{client.prenom}</td>
-                                        <td>
-                                            <Link to={`/modification/${client.clientId}`}>
-                                                <Button className='m-2' variant="primary">Modifier</Button>
-                                            </Link>
-                                            <Link to={`/confirmation-suppression/${client.clientId}`}>
-                                                <Button variant="danger">Supprimer</Button>
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                        <ClientTable clients={clientsTries} />
                     )}
                 </Col>
             </Row>
