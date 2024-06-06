@@ -15,6 +15,14 @@ export const PageListeClients = () => {
     const [etats, setEtats] = useState([]);
     const [pays, setPays] = useState([]);
 
+    const [municipalitesSelectionnees, setMunicipalitesSelectionnees] = useState([]);
+    const [etatsSelectionnes, setEtatsSelectionnes] = useState([]);
+    const [paysSelectionnes, setPaysSelectionnes] = useState([]);
+
+    const [compteurMunicipalites, setCompteurMunicipalites] = useState({});
+    const [compteurEtats, setCompteurEtats] = useState({});
+    const [compteurPays, setCompteurPays] = useState({});
+
     useEffect(() => {
         fetch("/api/Clients")
             .then(response => response.json())
@@ -22,33 +30,46 @@ export const PageListeClients = () => {
                 setClients(data);
 
                 const toutesAdresses = data.flatMap(client => client.adresses);
-                
-                const uniqueMunicipalities = [];
-                const uniqueEtats = [];
-                const uniquePays = [];
-                
+
+                const compteurMunicipalitesTemp = {};
+                const compteurEtatsTemp = {};
+                const compteurPaysTemp = {};
+
                 toutesAdresses.forEach(adresse => {
-                    if (!uniqueMunicipalities.includes(adresse.nomMunicipalite)) {
-                        uniqueMunicipalities.push(adresse.nomMunicipalite);
+                    
+                    if (compteurMunicipalitesTemp[adresse.nomMunicipalite] === undefined) {
+                        compteurMunicipalitesTemp[adresse.nomMunicipalite] = 1;
+                    } else {
+                        compteurMunicipalitesTemp[adresse.nomMunicipalite]++;
                     }
-                    if (!uniqueEtats.includes(adresse.etat)) {
-                        uniqueEtats.push(adresse.etat);
+
+                    if (compteurEtatsTemp[adresse.etat] === undefined) {
+                        compteurEtatsTemp[adresse.etat] = 1;
+                    } else {
+                        compteurEtatsTemp[adresse.etat]++;
                     }
-                    if (!uniquePays.includes(adresse.pays)) {
-                        uniquePays.push(adresse.pays);
+
+                    if (compteurPaysTemp[adresse.pays] === undefined) {
+                        compteurPaysTemp[adresse.pays] = 1;
+                    } else {
+                        compteurPaysTemp[adresse.pays]++;
                     }
                 });
-                
-                setMunicipalites(uniqueMunicipalities);
-                setEtats(uniqueEtats);
-                setPays(uniquePays);
+
+                setCompteurMunicipalites(compteurMunicipalitesTemp);
+                setCompteurEtats(compteurEtatsTemp);
+                setCompteurPays(compteurPaysTemp);
+
+                setMunicipalites(Object.keys(compteurMunicipalitesTemp));
+                setEtats(Object.keys(compteurEtatsTemp));
+                setPays(Object.keys(compteurPaysTemp));
             });
     }, []);
-    
 
     const gererTri = (e) => {
         setTri(e.target.value);
     }
+
     const trierClients = (clients) => { 
         return clients.sort((a, b) => {
             if (tri === 'nom') {
@@ -58,7 +79,38 @@ export const PageListeClients = () => {
             }
         });
     }
-    const clientsTries = trierClients(clients);
+
+    const toggleFiltre = (nouvelleValeur, typeFiltre) => {
+        const toggle = (selectionnees, setSelectionnees) => {
+            setSelectionnees(selectionnees => 
+                selectionnees.includes(nouvelleValeur) ? selectionnees.filter(ancienneValeur => ancienneValeur !== nouvelleValeur) : [...selectionnees, nouvelleValeur]
+            );
+        };
+        
+        switch (typeFiltre) {
+            case 'municipalite':
+                toggle(municipalitesSelectionnees, setMunicipalitesSelectionnees);
+                break;
+            case 'etat':
+                toggle(etatsSelectionnes, setEtatsSelectionnes);
+                break;
+            case 'pays':
+                toggle(paysSelectionnes, setPaysSelectionnes);
+                break;
+            default:
+                break;
+        }
+    }
+
+    const clientsFiltres = clients.filter(client => {
+        const adressesClient = client.adresses;
+        const filtreMunicipalite = municipalitesSelectionnees.length === 0 || adressesClient.find(adresse => municipalitesSelectionnees.includes(adresse.nomMunicipalite));
+        const filtreEtat = etatsSelectionnes.length === 0 || adressesClient.find(adresse => etatsSelectionnes.includes(adresse.etat));
+        const filtrePays = paysSelectionnes.length === 0 || adressesClient.find(adresse => paysSelectionnes.includes(adresse.pays));
+        return filtreMunicipalite && filtreEtat && filtrePays;
+    });
+
+    const clientsTries = trierClients(clientsFiltres);
 
     return (
         <Container>
@@ -66,7 +118,6 @@ export const PageListeClients = () => {
                 <Col md={8}>
                     <h1>Liste des clients</h1>
 
- {/*ajouter accordeon*/}
                     <Container>
                         <Row className="align-items-center">
                             <Col md={3}>
@@ -92,51 +143,51 @@ export const PageListeClients = () => {
                                         <Accordion.Header>Municipalité</Accordion.Header>
                                         <Accordion.Body>
                                         {municipalites.map((municipalite, index) => (
-                                                <div key={index}>
-                                                    <input
-                                                        type="checkbox"
-                                                        value={municipalite}
-                                                        // onChange
-                                                    />
-                                                    <label>
-                                                        {municipalite}
-                                                    </label>
-                                                </div>
-                                            ))}
+                                            <div key={index}>
+                                                <input
+                                                    type="checkbox"
+                                                    value={municipalite}
+                                                    onChange={() => toggleFiltre(municipalite, 'municipalite')}
+                                                />
+                                                <label>
+                                                    {municipalite} ({compteurMunicipalites[municipalite]})
+                                                </label>
+                                            </div>
+                                        ))}
                                         </Accordion.Body>
                                     </Accordion.Item>
                                     <Accordion.Item eventKey="1">
                                         <Accordion.Header>État</Accordion.Header>
                                         <Accordion.Body>
                                         {etats.map((etat, index) => (
-                                                <div key={index}>
-                                                    <input
-                                                        type="checkbox"
-                                                        value={etat}
-                                                        // onChange
-                                                    />
-                                                    <label>
-                                                        {etat}
-                                                    </label>
-                                                </div>
-                                            ))}
+                                            <div key={index}>
+                                                <input
+                                                    type="checkbox"
+                                                    value={etat}
+                                                    onChange={() => toggleFiltre(etat, 'etat')}
+                                                />
+                                                <label>
+                                                    {etat} ({compteurEtats[etat]})
+                                                </label>
+                                            </div>
+                                        ))}
                                         </Accordion.Body>
                                     </Accordion.Item>
                                     <Accordion.Item eventKey="2">
                                         <Accordion.Header>Pays</Accordion.Header>
                                         <Accordion.Body>
                                         {pays.map((pays, index) => (
-                                                <div key={index}>
-                                                    <input
-                                                        type="checkbox"
-                                                        value={pays}
-                                                        // onChange
-                                                    />
-                                                    <label>
-                                                        {pays}
-                                                    </label>
-                                                </div>
-                                            ))}
+                                            <div key={index}>
+                                                <input
+                                                    type="checkbox"
+                                                    value={pays}
+                                                    onChange={() => toggleFiltre(pays, 'pays')}
+                                                />
+                                                <label>
+                                                    {pays} ({compteurPays[pays]})
+                                                </label>
+                                            </div>
+                                        ))}
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>
@@ -176,6 +227,5 @@ export const PageListeClients = () => {
                 </Col>
             </Row>
         </Container>
-    )
-
+    );
 }
