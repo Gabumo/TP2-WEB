@@ -32,10 +32,10 @@ export function PageConfirmationSuppression() {
                 </div>
             ) : (
                 <div>
-                    <h2>Confirmation de suppression</h2>
-                    <p>Le client as bien été supprimé</p>
+                    <h2>Client supprimé</h2>
+                    <p>Le client a bien été supprimé.</p>
                     <Link to="/liste-clients">
-                        <Button variant="secondary">Retour</Button>
+                        <Button variant="secondary">Retour à la liste de clients</Button>
                     </Link>
                 </div>
             )}
