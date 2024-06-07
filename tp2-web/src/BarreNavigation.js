@@ -15,7 +15,6 @@ export const BarreNavigation = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/">Accueil</Nav.Link>
-                            {/* mettre cache si n'est pas connecter*/}
                         <Nav.Link href="/liste-clients">Liste Clients</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>

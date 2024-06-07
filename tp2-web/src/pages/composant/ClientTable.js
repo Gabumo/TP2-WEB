@@ -3,12 +3,12 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 
-const ClientTable = ({ clients}) => {
+const ClientTable = ({ clients }) => {
     return (
         <Table striped bordered hover>
             <thead>
                 <tr>
-                <th style={{ width: '35%' }}>Nom</th>
+                    <th style={{ width: '35%' }}>Nom</th>
                     <th style={{ width: '35%' }}>Prénom</th>
                     <th style={{ width: '30%' }}>Actions</th>
                 </tr>

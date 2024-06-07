@@ -3,11 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
-import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import FiltreAccordeon from './composant/FiltreAccordeon';
 import ClientTable from './composant/ClientTable';
+import ClientTri from './composant/ClientTri';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const PageListeClients = () => {
@@ -38,7 +38,7 @@ export const PageListeClients = () => {
                 const compteurPaysTemp = {};
 
                 toutesAdresses.forEach(adresse => {
-                    
+
                     if (compteurMunicipalitesTemp[adresse.nomMunicipalite] === undefined) {
                         compteurMunicipalitesTemp[adresse.nomMunicipalite] = 1;
                     } else {
@@ -72,7 +72,7 @@ export const PageListeClients = () => {
         setTri(e.target.value);
     }
 
-    const trierClients = (clients) => { 
+    const trierClients = (clients) => {
         return clients.sort((a, b) => {
             if (tri === 'nom') {
                 return a.nom.localeCompare(b.nom);
@@ -84,11 +84,11 @@ export const PageListeClients = () => {
 
     const toggleFiltre = (nouvelleValeur, typeFiltre) => {
         const toggle = (selectionnees, setSelectionnees) => {
-            setSelectionnees(selectionnees => 
+            setSelectionnees(selectionnees =>
                 selectionnees.includes(nouvelleValeur) ? selectionnees.filter(ancienneValeur => ancienneValeur !== nouvelleValeur) : [...selectionnees, nouvelleValeur]
             );
         };
-        
+
         switch (typeFiltre) {
             case 'municipalite':
                 toggle(municipalitesSelectionnees, setMunicipalitesSelectionnees);
@@ -103,14 +103,26 @@ export const PageListeClients = () => {
                 break;
         }
     }
+    const aucunFiltreSelectionne = municipalitesSelectionnees.length === 0 && etatsSelectionnes.length === 0 && paysSelectionnes.length === 0;
 
-    const clientsFiltres = clients.filter(client => {
+    const clientsFiltres = aucunFiltreSelectionne ? clients : clients.filter(client => {
         const adressesClient = client.adresses;
-        const filtreMunicipalite = municipalitesSelectionnees.length === 0 || adressesClient.find(adresse => municipalitesSelectionnees.includes(adresse.nomMunicipalite));
-        const filtreEtat = etatsSelectionnes.length === 0 || adressesClient.find(adresse => etatsSelectionnes.includes(adresse.etat));
-        const filtrePays = paysSelectionnes.length === 0 || adressesClient.find(adresse => paysSelectionnes.includes(adresse.pays));
-        return filtreMunicipalite && filtreEtat && filtrePays;
+        const filtreMunicipalite = adressesClient.find(adresse => municipalitesSelectionnees.includes(adresse.nomMunicipalite));
+        const filtreEtat = adressesClient.find(adresse => etatsSelectionnes.includes(adresse.etat));
+        const filtrePays = adressesClient.find(adresse => paysSelectionnes.includes(adresse.pays));
+
+        console.log('Client:', client.nom);
+        console.log('filtreMunicipalite:', filtreMunicipalite);
+        console.log('filtreEtat:', filtreEtat);
+        console.log('filtrePays:', filtrePays);
+
+        return filtreMunicipalite || filtreEtat || filtrePays;
     });
+
+    console.log('Municipalités sélectionnées:', municipalitesSelectionnees);
+    console.log('États sélectionnés:', etatsSelectionnes);
+    console.log('Pays sélectionnés:', paysSelectionnes);
+    console.log('Clients filtrés:', clientsFiltres);
 
     const clientsTries = trierClients(clientsFiltres);
 
@@ -123,10 +135,7 @@ export const PageListeClients = () => {
                     <Container>
                         <Row className="align-items-center">
                             <Col md={3}>
-                                <select onChange={gererTri} value={tri} className='form-select'>
-                                    <option value='nom'>Trier par nom</option>
-                                    <option value='prenom'>Trier par prénom</option>
-                                </select>
+                                <ClientTri tri={tri} gererTri={gererTri} />
                             </Col>
                             <Col md={4} className="text-end">
                                 <Link to="/ajout-client">
@@ -135,16 +144,16 @@ export const PageListeClients = () => {
                             </Col>
                         </Row>
                     </Container>
-                    
+
                     <FiltreAccordeon
-                           municipalites={municipalites}
-                           etats={etats}
-                           pays={pays}
-                           toggleFiltre={toggleFiltre}
-                           compteurMunicipalites={compteurMunicipalites}
-                           compteurEtats={compteurEtats}
-                           compteurPays={compteurPays}
-                       />
+                        municipalites={municipalites}
+                        etats={etats}
+                        pays={pays}
+                        toggleFiltre={toggleFiltre}
+                        compteurMunicipalites={compteurMunicipalites}
+                        compteurEtats={compteurEtats}
+                        compteurPays={compteurPays}
+                    />
 
                     {clients.length === 0 ? (
                         <p>Aucun client trouvé.</p>
