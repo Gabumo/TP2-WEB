@@ -31,31 +31,32 @@ export const PageListeClients = () => {
             .then(data => {
                 setClients(data);
 
-                const toutesAdresses = data.flatMap(client => client.adresses);
-
                 const compteurMunicipalitesTemp = {};
                 const compteurEtatsTemp = {};
                 const compteurPaysTemp = {};
 
-                toutesAdresses.forEach(adresse => {
+                data.forEach(client => {
 
-                    if (compteurMunicipalitesTemp[adresse.nomMunicipalite] === undefined) {
-                        compteurMunicipalitesTemp[adresse.nomMunicipalite] = 1;
-                    } else {
+                    client.adresses.forEach(adresse => {
+                        if (compteurMunicipalitesTemp[adresse.nomMunicipalite] === undefined) {
+                            compteurMunicipalitesTemp[adresse.nomMunicipalite] = 0;
+                        }
                         compteurMunicipalitesTemp[adresse.nomMunicipalite]++;
-                    }
+                    });
 
-                    if (compteurEtatsTemp[adresse.etat] === undefined) {
-                        compteurEtatsTemp[adresse.etat] = 1;
-                    } else {
+                    client.adresses.forEach(adresse => {
+                        if (compteurEtatsTemp[adresse.etat] === undefined) {
+                            compteurEtatsTemp[adresse.etat] = 0;
+                        }
                         compteurEtatsTemp[adresse.etat]++;
-                    }
+                    });
 
-                    if (compteurPaysTemp[adresse.pays] === undefined) {
-                        compteurPaysTemp[adresse.pays] = 1;
-                    } else {
+                    client.adresses.forEach(adresse => {
+                        if (compteurPaysTemp[adresse.pays] === undefined) {
+                            compteurPaysTemp[adresse.pays] = 0;
+                        }
                         compteurPaysTemp[adresse.pays]++;
-                    }
+                    });
                 });
 
                 setCompteurMunicipalites(compteurMunicipalitesTemp);
@@ -119,10 +120,6 @@ export const PageListeClients = () => {
         return filtreMunicipalite || filtreEtat || filtrePays;
     });
 
-    console.log('Municipalités sélectionnées:', municipalitesSelectionnees);
-    console.log('États sélectionnés:', etatsSelectionnes);
-    console.log('Pays sélectionnés:', paysSelectionnes);
-    console.log('Clients filtrés:', clientsFiltres);
 
     const clientsTries = trierClients(clientsFiltres);
 

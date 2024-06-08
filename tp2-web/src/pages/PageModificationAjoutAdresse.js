@@ -42,9 +42,9 @@ export function PageModificationAjoutAdresse() {
                     console.error("Erreur dans la récupération de l'adresse: ", error);
                     setAdresse(null);
                 }
-            } 
+            }
             setChargement(false);
-        }    
+        }
         recupererAdresse();
     }, [id, adresseId]);
 
@@ -224,9 +224,9 @@ export function PageModificationAjoutAdresse() {
                         </Link>
                     </div>
 
-                    {adresseModifie && 
+                    {adresseModifie &&
                         <Alert className="mt-3" variant="success">
-                           {adresseId !== 'creation' ? "L'adresse a été modifiée." : "L'adresse a été ajoutée."}
+                            {adresseId !== 'creation' ? "L'adresse a été modifiée." : "L'adresse a été ajoutée."}
                         </Alert>}
                 </Form>
             )}

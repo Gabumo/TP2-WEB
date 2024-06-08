@@ -78,22 +78,22 @@ export function PageModificationClient() {
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 clientId: id,
-                nom: nom, 
-                prenom: prenom, 
+                nom: nom,
+                prenom: prenom,
                 dateNaissance: dateNaissance
-             })
+            })
         };
 
         try {
             const reponse = await fetch(`/api/Clients/${id}`, requestOptions);
             if (reponse.ok) {
-                    setClientModifie(true);
-                } else {
-                    alert('Erreur lors de la modification du client');
-                }
-            } catch (error) {
+                setClientModifie(true);
+            } else {
+                alert('Erreur lors de la modification du client');
+            }
+        } catch (error) {
             console.error('Erreur lors de la modification du client: ', error);
             alert('Erreur lors de la modification du client');
         }
@@ -159,7 +159,7 @@ export function PageModificationClient() {
                             <Button variant="secondary">Retour à la liste des clients</Button>
                         </Link>
                     </div>
-                    
+
                     {!donneesValides && !checkErreurs() &&
                         <Alert className="mt-3" variant="danger">
                             Les données entrées ne sont pas valides :
@@ -181,37 +181,37 @@ export function PageModificationClient() {
                         <p>Aucune adresse enregistrée.</p>
                     )}
                     {client.adresses.length > 0 && (
-                    <Accordion defaultActiveKey="0">
-                        {client.adresses.map(adresse => (
-                            <Accordion.Item key={adresse.adresseId} eventKey={adresse.adresseId}>
-                                <Accordion.Header>
-                                    <strong>{adresse.numeroCivique}, {adresse.typeVoie} {adresse.odonyme}</strong>
-                                </Accordion.Header>
+                        <Accordion defaultActiveKey="0">
+                            {client.adresses.map(adresse => (
+                                <Accordion.Item key={adresse.adresseId} eventKey={adresse.adresseId}>
+                                    <Accordion.Header>
+                                        <strong>{adresse.numeroCivique}, {adresse.typeVoie} {adresse.odonyme}</strong>
+                                    </Accordion.Header>
 
-                                <Accordion.Body>
-                                    <p><strong>Ville:</strong> {adresse.nomMunicipalite}</p>
-                                    <p><strong>Province/État:</strong> {adresse.etat}</p>
-                                    <p><strong>Code postal:</strong> {adresse.codePostal}</p>
-                                    <p><strong>Pays:</strong> {adresse.pays}</p>
-                                    <p>
-                                        <strong>Information supplémentaire: </strong> 
-                                        {adresse.informationSupplementaire ? adresse.informationSupplementaire : "Aucune"}
-                                    </p>
+                                    <Accordion.Body>
+                                        <p><strong>Ville:</strong> {adresse.nomMunicipalite}</p>
+                                        <p><strong>Province/État:</strong> {adresse.etat}</p>
+                                        <p><strong>Code postal:</strong> {adresse.codePostal}</p>
+                                        <p><strong>Pays:</strong> {adresse.pays}</p>
+                                        <p>
+                                            <strong>Information supplémentaire: </strong>
+                                            {adresse.informationSupplementaire ? adresse.informationSupplementaire : "Aucune"}
+                                        </p>
 
-                                    <Link to={`/modification/${id}/${adresse.adresseId}`}>
-                                        <Button className="me-2" variant="primary">Modifier</Button>
-                                    </Link>
+                                        <Link to={`/modification/${id}/${adresse.adresseId}`}>
+                                            <Button className="me-2" variant="primary">Modifier</Button>
+                                        </Link>
 
-                                    <Button className="me-2" variant="danger" 
-                                    onClick={() => gererSuppressionAdresse(adresse.adresseId)}>
-                                        Supprimer
-                                    </Button>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        ))}
-                    </Accordion>
+                                        <Button className="me-2" variant="danger"
+                                            onClick={() => gererSuppressionAdresse(adresse.adresseId)}>
+                                            Supprimer
+                                        </Button>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            ))}
+                        </Accordion>
                     )}
-                    
+
                     <Link to={`/modification/${id}/creation`}>
                         <Button className="m-2" variant="success">Ajouter une adresse</Button>
                     </Link>
