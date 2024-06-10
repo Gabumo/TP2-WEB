@@ -17,6 +17,11 @@ export function PageModificationAjoutAdresse() {
     const [erreurs, setErreurs] = useState([]);
     const [chargement, setChargement] = useState(true);
     const [informationSupplementaire, setInfo] = useState('');
+    const MIN_LONGUEUR = 2;
+    const MAX_LONGUEUR = 50;
+    const MAX_LONGUEUR_CODE_POSTAL = 10;
+    const MIN_LONGUEUR_CODE_POSTAL = 5;
+
 
     useEffect(() => {
         async function recupererAdresse() {
@@ -55,23 +60,23 @@ export function PageModificationAjoutAdresse() {
         if (isNaN(numeroCiviqueInt) || numeroCiviqueInt < 1) {
             nouvellesErreurs.push('Le numéro civique doit être une valeur numérique positive.');
         }
-        if (typeVoie.trim().length < 2) {
-            nouvellesErreurs.push('Le type de voie doit contenir au moins 2 caractères.');
+        if (typeVoie.trim().length < MIN_LONGUEUR || typeVoie.trim().length > MAX_LONGUEUR) {
+            nouvellesErreurs.push('Le type de voie doit contenir entre 2 et 30 caractères.');
         }
-        if (odonyme.trim().length < 2) {
-            nouvellesErreurs.push('L\'odonyme doit contenir au moins 2 caractères.');
+        if (odonyme.trim().length < MIN_LONGUEUR || odonyme.trim().length > MAX_LONGUEUR) {
+            nouvellesErreurs.push('L\'odonyme doit contenir entre 2 et 30 caractères.');
         }
-        if (nomMunicipalite.trim().length < 2) {
+        if (nomMunicipalite.trim().length < MIN_LONGUEUR || nomMunicipalite.trim().length > MAX_LONGUEUR) {
             nouvellesErreurs.push('Le nom de la municipalité doit contenir au moins 2 caractères.');
         }
-        if (etat.trim().length < 2) {
-            nouvellesErreurs.push('L\'état/province doit contenir au moins 2 caractères.');
+        if (etat.trim().length < MIN_LONGUEUR || etat.trim().length > MAX_LONGUEUR) {
+            nouvellesErreurs.push('L\'état/province doit contenir entre 2 et 30 caractères.');
         }
-        if (codePostal.trim().length < 5) {
-            nouvellesErreurs.push('Le code postal doit contenir au moins 5 caractères.');
+        if (codePostal.trim().length < MIN_LONGUEUR_CODE_POSTAL || codePostal.trim().length > MAX_LONGUEUR_CODE_POSTAL) {
+            nouvellesErreurs.push('Le code postal doit contenir entre 5 et 10 caractères.');
         }
-        if (pays.trim().length < 2) {
-            nouvellesErreurs.push('Le pays doit contenir au moins 2 caractères.');
+        if (pays.trim().length < MIN_LONGUEUR || pays.trim().length > MAX_LONGUEUR) {
+            nouvellesErreurs.push('Le pays doit contenir entre 2 et 30 caractères.');
         }
 
         setErreurs(nouvellesErreurs);

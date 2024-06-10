@@ -14,6 +14,9 @@ export function PageAjoutClient() {
     const [clientAjoute, setClientAjoute] = useState(false);
     const [erreurs, setErreurs] = useState([]);
 
+    const MIN_LONGUEUR = 2;
+    const MAX_LONGUEUR = 30;
+
     // Masquer le message d'alerte d'ajout d'un client après 5 secondes
     // setTimeout non vu en classe, mais je l'ai utilisé dans un des projets AMOC.
     if (clientAjoute) {
@@ -24,11 +27,11 @@ export function PageAjoutClient() {
 
     function checkErreurs() {
         erreurs.length = 0;
-        if (nom.length < 2) {
-            erreurs.push('Le nom doit contenir au moins 2 caractères.');
+        if (nom.length < MIN_LONGUEUR || nom.length > MAX_LONGUEUR) {
+            erreurs.push('Le nom doit contenir entre 2 et 30 caractères.');
         }
         if (prenom.length < 2) {
-            erreurs.push('Le prénom doit contenir au moins 2 caractères.');
+            erreurs.push('Le prénom doit contenir entre 2 et 30 caractères.');
         }
         if (new Date(dateNaissance) > new Date()) {
             erreurs.push('La date de naissance doit être inférieure à la date d\'aujourd\'hui.');
